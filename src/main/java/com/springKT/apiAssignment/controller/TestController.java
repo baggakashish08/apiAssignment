@@ -34,7 +34,7 @@ public class TestController {
     public ResponseEntity<Map<String, Object>> createTest(@RequestBody Map<String, Object> requestBody) {
         Map<String, Object> response = new HashMap<>();
         response.put("status", "created");
-        response.put("message", "Test item created successfullyyyyy");
+        response.put("message", "Test item created successfullyyyyyy");
         response.put("data", requestBody);
         response.put("timestamp", LocalDateTime.now().toString());
         return ResponseEntity.status(201).body(response);
