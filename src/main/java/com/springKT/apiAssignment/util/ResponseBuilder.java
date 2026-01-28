@@ -27,6 +27,11 @@ public class ResponseBuilder {
         return this;
     }
 
+    public ResponseBuilder id(Object id) {
+        response.put("id", id);
+        return this;
+    }
+
     public ResponseBuilder field(String key, Object value) {
         response.put(key, value);
         return this;
@@ -37,15 +42,41 @@ public class ResponseBuilder {
         return this;
     }
 
+    public ResponseBuilder metadata(String mode, String version) {
+        Map<String, Object> meta = new LinkedHashMap<>();
+        meta.put("timestamp", LocalDateTime.now().toString());
+        meta.put("version", version);
+        meta.put("mode", mode);
+        response.put("metadata", meta);
+        return this;
+    }
+
     public Map<String, Object> build() {
         return response;
     }
 
+    // Static factory methods
     public static ResponseBuilder success() {
         return new ResponseBuilder().status("success");
     }
 
+    public static ResponseBuilder created() {
+        return new ResponseBuilder().status("created");
+    }
+
+    public static ResponseBuilder updated() {
+        return new ResponseBuilder().status("updated");
+    }
+
+    public static ResponseBuilder deleted() {
+        return new ResponseBuilder().status("deleted");
+    }
+
     public static ResponseBuilder error() {
         return new ResponseBuilder().status("error");
+    }
+
+    public static ResponseBuilder pong() {
+        return new ResponseBuilder().status("pong").timestamp();
     }
 }

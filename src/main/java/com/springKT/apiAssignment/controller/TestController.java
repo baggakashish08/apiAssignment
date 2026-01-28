@@ -1,6 +1,7 @@
 package com.springKT.apiAssignment.controller;
 
 import com.springKT.apiAssignment.config.TestApiConfig;
+import com.springKT.apiAssignment.util.ResponseBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -129,11 +129,12 @@ public class TestController {
 
     @GetMapping("/health")
     public ResponseEntity<Map<String, Object>> healthCheck() {
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.put("status", config.isEnabled() ? "UP" : "DISABLED");
-        response.put("service", "apiAssignment");
-        response.put("mode", config.getMode());
-        response.put("timestamp", LocalDateTime.now().toString());
+        Map<String, Object> response = new ResponseBuilder()
+                .status(config.isEnabled() ? "UP" : "DISABLED")
+                .field("service", "apiAssignment")
+                .field("mode", config.getMode())
+                .timestamp()
+                .build();
         return ResponseEntity.ok(response);
     }
 
@@ -152,10 +153,7 @@ public class TestController {
 
     @GetMapping("/ping")
     public ResponseEntity<Map<String, Object>> ping() {
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.put("status", "pong");
-        response.put("timestamp", LocalDateTime.now().toString());
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ResponseBuilder.pong().build());
     }
 
     // ============ Helper Methods ============
@@ -199,10 +197,10 @@ public class TestController {
     }
 
     private ResponseEntity<Map<String, Object>> buildDisabledResponse() {
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.put("status", "error");
-        response.put("message", "Test API is currently disabled");
-        response.put("timestamp", LocalDateTime.now().toString());
+        Map<String, Object> response = ResponseBuilder.error()
+                .message("Test API is currently disabled")
+                .timestamp()
+                .build();
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(response);
     }
 
