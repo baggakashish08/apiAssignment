@@ -40,6 +40,11 @@ public class TestApiConfig {
      */
     private int maxItems = 100;
 
+    /**
+     * Whether to log incoming requests
+     */
+    private boolean logRequests = false;
+
     // Getters and Setters
     public String getMode() {
         return mode;
@@ -87,5 +92,13 @@ public class TestApiConfig {
 
     public void setMaxItems(int maxItems) {
         this.maxItems = maxItems;
+    }
+
+    public boolean isLogRequests() {
+        return logRequests;
+    }
+
+    public void setLogRequests(boolean logRequests) {
+        this.logRequests = logRequests;
     }
 }

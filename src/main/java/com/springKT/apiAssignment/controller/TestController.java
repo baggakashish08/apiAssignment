@@ -1,6 +1,8 @@
 package com.springKT.apiAssignment.controller;
 
 import com.springKT.apiAssignment.config.TestApiConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +17,15 @@ import java.util.Map;
 @RequestMapping(value = "/api/test")
 public class TestController {
 
+    private static final Logger logger = LoggerFactory.getLogger(TestController.class);
+
     @Autowired
     private TestApiConfig config;
 
     @GetMapping
     public ResponseEntity<Map<String, Object>> getTest() {
+        logRequest("GET", "/api/test", null);
+        
         if (!config.isEnabled()) {
             return buildDisabledResponse();
         }
@@ -38,6 +44,8 @@ public class TestController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Map<String, Object>> getTestById(@PathVariable Integer id) {
+        logRequest("GET", "/api/test/" + id, null);
+        
         if (!config.isEnabled()) {
             return buildDisabledResponse();
         }
@@ -57,6 +65,8 @@ public class TestController {
 
     @PostMapping
     public ResponseEntity<Map<String, Object>> createTest(@RequestBody Map<String, Object> requestBody) {
+        logRequest("POST", "/api/test", requestBody);
+        
         if (!config.isEnabled()) {
             return buildDisabledResponse();
         }
@@ -76,6 +86,8 @@ public class TestController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Map<String, Object>> updateTest(@PathVariable Integer id, @RequestBody Map<String, Object> requestBody) {
+        logRequest("PUT", "/api/test/" + id, requestBody);
+        
         if (!config.isEnabled()) {
             return buildDisabledResponse();
         }
@@ -96,6 +108,8 @@ public class TestController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Map<String, Object>> deleteTest(@PathVariable Integer id) {
+        logRequest("DELETE", "/api/test/" + id, null);
+        
         if (!config.isEnabled()) {
             return buildDisabledResponse();
         }
@@ -132,6 +146,7 @@ public class TestController {
         response.put("responseDelayMs", config.getResponseDelayMs());
         response.put("messagePrefix", config.getMessagePrefix());
         response.put("maxItems", config.getMaxItems());
+        response.put("logRequests", config.isLogRequests());
         return ResponseEntity.ok(response);
     }
 
@@ -198,6 +213,12 @@ public class TestController {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
+        }
+    }
+
+    private void logRequest(String method, String path, Object body) {
+        if (config.isLogRequests()) {
+            logger.info("Request: {} {} | Body: {}", method, path, body);
         }
     }
 }
