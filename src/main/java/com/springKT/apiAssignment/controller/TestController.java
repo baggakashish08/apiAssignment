@@ -143,19 +143,6 @@ public class TestController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/echo")
-    public ResponseEntity<Map<String, Object>> echo(
-            @RequestBody(required = false) Map<String, Object> body,
-            @RequestHeader Map<String, String> headers,
-            @RequestParam Map<String, String> params) {
-        Map<String, Object> response = new LinkedHashMap<>();
-        response.put("echoedBody", body);
-        response.put("echoedParams", params);
-        response.put("echoedHeaders", headers);
-        response.put("timestamp", LocalDateTime.now().toString());
-        return ResponseEntity.ok(response);
-    }
-
     // ============ Helper Methods ============
 
     private void addModeSpecificData(Map<String, Object> response, String operation) {
