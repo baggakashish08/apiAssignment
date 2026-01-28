@@ -15,7 +15,7 @@ public class TestController {
     public ResponseEntity<Map<String, Object>> getTest() {
         Map<String, Object> response = new HashMap<>();
         response.put("status", "success");
-        response.put("message", "Test API is working!");
+        response.put("message", "Test API is working yes!");
         response.put("timestamp", LocalDateTime.now().toString());
         return ResponseEntity.ok(response);
     }
