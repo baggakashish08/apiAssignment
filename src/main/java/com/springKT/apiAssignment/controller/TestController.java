@@ -135,6 +135,14 @@ public class TestController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/ping")
+    public ResponseEntity<Map<String, Object>> ping() {
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("status", "pong");
+        response.put("timestamp", LocalDateTime.now().toString());
+        return ResponseEntity.ok(response);
+    }
+
     // ============ Helper Methods ============
 
     private void addModeSpecificData(Map<String, Object> response, String operation) {
