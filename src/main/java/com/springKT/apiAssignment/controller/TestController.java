@@ -156,6 +156,18 @@ public class TestController {
         return ResponseEntity.ok(ResponseBuilder.pong().build());
     }
 
+    @GetMapping("/info")
+    public ResponseEntity<Map<String, Object>> getInfo() {
+        Map<String, Object> response = ResponseBuilder.success()
+                .message("API Information")
+                .field("appName", "apiAssignment")
+                .field("javaVersion", System.getProperty("java.version"))
+                .field("osName", System.getProperty("os.name"))
+                .timestamp()
+                .build();
+        return ResponseEntity.ok(response);
+    }
+
     // ============ Helper Methods ============
 
     private void addModeSpecificData(Map<String, Object> response, String operation) {
