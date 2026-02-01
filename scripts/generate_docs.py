@@ -4,7 +4,11 @@ import re
 from datetime import datetime
 from openai import OpenAI
 
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+# Langflow API configuration
+client = OpenAI(
+    api_key=os.environ.get("LANGFLOW_API_KEY"),
+    base_url="https://dev-langflowfe.salescode.ai/api/v1"
+)
 
 def read_file(filepath):
     with open(filepath, 'r') as f:
