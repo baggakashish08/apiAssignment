@@ -1,0 +1,65 @@
+name: Daily Documentation Update
+
+on:
+  schedule:
+    # Runs at 9 PM IST (3:30 PM UTC) every day
+    - cron: '30 15 * * *'
+  
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  update-docs:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history to check commits
+      
+      - name: Get today's commits
+        id: commits
+        run: |
+          # Get commits from last 24 hours on main branch
+          SINCE=$(date -u -d '24 hours ago' '+%Y-%m-%dT%H:%M:%SZ')
+          
+          # Get list of changed files from today's commits
+          FILES=$(git log --since="$SINCE" --name-only --pretty=format: main -- '*.java' | sort -u | grep -v '^$' | tr '\n' ' ')
+          
+          echo "files=$FILES" >> $GITHUB_OUTPUT
+          echo "Found changed files: $FILES"
+          
+          # Check if there are any commits today
+          COMMIT_COUNT=$(git log --since="$SINCE" --oneline main | wc -l)
+          echo "commit_count=$COMMIT_COUNT" >> $GITHUB_OUTPUT
+          echo "Commits in last 24h: $COMMIT_COUNT"
+      
+      - name: Setup Python
+        if: steps.commits.outputs.files != ''
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        if: steps.commits.outputs.files != ''
+        run: pip install openai
+      
+      - name: Generate documentation
+        if: steps.commits.outputs.files != ''
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python scripts/generate_docs.py "${{ steps.commits.outputs.files }}"
+      
+      - name: Commit and push changes
+        if: steps.commits.outputs.files != ''
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add DOCS.md
+          git diff --staged --quiet || git commit -m "docs: daily documentation update ($(date '+%Y-%m-%d'))"
+          git push
+      
+      - name: No changes today
+        if: steps.commits.outputs.files == ''
+        run: echo "No Java files changed in the last 24 hours. Skipping documentation update."
