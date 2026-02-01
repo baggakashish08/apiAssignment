@@ -4,10 +4,10 @@ import re
 from datetime import datetime
 from openai import OpenAI
 
-# Langflow API configuration
+# Groq API configuration
 client = OpenAI(
-    api_key=os.environ.get("LANGFLOW_API_KEY"),
-    base_url="https://dev-langflowfe.salescode.ai/api/v1"
+    api_key=os.environ.get("GROQ_API_KEY"),
+    base_url="https://api.groq.com/openai/v1"
 )
 
 def read_file(filepath):
@@ -48,7 +48,7 @@ Output in clean markdown format only. No extra explanation.
 """
     
     response = client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="openai/gpt-oss-120b",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.3
     )
