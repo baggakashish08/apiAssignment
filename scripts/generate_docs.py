@@ -4,11 +4,7 @@ import re
 from datetime import datetime
 from openai import OpenAI
 
-# Groq uses OpenAI-compatible API with different base URL
-client = OpenAI(
-    api_key=os.environ.get("GROQ_API_KEY"),
-    base_url="https://api.groq.com/openai/v1"
-)
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 def read_file(filepath):
     with open(filepath, 'r') as f:
@@ -48,7 +44,7 @@ Output in clean markdown format only. No extra explanation.
 """
     
     response = client.chat.completions.create(
-        model="llama-3.1-70b-versatile",
+        model="gpt-4o-mini",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.3
     )
