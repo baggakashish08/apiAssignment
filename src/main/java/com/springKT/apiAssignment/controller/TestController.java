@@ -223,6 +223,33 @@ public class TestController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/random")
+    public ResponseEntity<Map<String, Object>> getRandomNumber(
+            @RequestParam(defaultValue = "1") Integer min,
+            @RequestParam(defaultValue = "100") Integer max) {
+        
+        if (min >= max) {
+            return ResponseEntity.badRequest().body(
+                    ResponseBuilder.error()
+                            .message("Min must be less than max")
+                            .timestamp()
+                            .build()
+            );
+        }
+        
+        int randomNumber = min + (int) (Math.random() * (max - min + 1));
+        
+        Map<String, Object> response = ResponseBuilder.success()
+                .message("Random number generated")
+                .field("min", min)
+                .field("max", max)
+                .field("result", randomNumber)
+                .timestamp()
+                .build();
+        
+        return ResponseEntity.ok(response);
+    }
+
     // ============ Helper Methods ============
 
     private void addModeSpecificData(Map<String, Object> response, String operation) {
