@@ -15,7 +15,7 @@ def read_file(filepath):
         return f.read()
 
 def generate_documentation(filename, content):
-    prompt = f"""You are a technical documentation writer. Generate markdown documentation for this Java file.
+    prompt = f"""You are a technical documentation writer. Analyze this Java file and generate comprehensive documentation in the Service Spec format.
 
 File: {filename}
 
@@ -24,27 +24,90 @@ Code:
 {content}
 ```
 
-Generate documentation with these sections:
+Generate documentation using this EXACT format (fill in all sections based on code analysis):
 
-## {filename}
+# Service Spec — {filename}
 
-### Overview
-Brief description of what this file does.
+**Service name:** {filename}  
+**Last updated:** [current date]
 
-### Key Components
-List main methods/functions with:
-- **Method name**
-- Purpose
-- Parameters  
-- Returns
+---
 
-### API Endpoints (if applicable)
-List any REST endpoints with method, path, description.
+# 1. Ownership
 
-### Usage Examples
-Code examples showing how to use this.
+| Role | Name | Responsibility |
+|------|------|----------------|
+| **Lead** | TBD | Tech direction, ownership, incidents |
+| **Service owner** | TBD | Roadmap, SLAs, stakeholders |
+| **Team members** | TBD | Development and maintenance |
 
-Output in clean markdown format only. No extra explanation.
+---
+
+# 2. Logic & Purpose
+
+**What does this service do?** *(One sentence describing the main purpose)*
+
+**Scope**
+- **In scope:** *(List what this file/service is responsible for)*
+
+**Features / Capabilities**
+
+| Feature | What it does | Exposed via |
+|---------|--------------|-------------|
+| *(list features from code)* | *(description)* | API / event / UI |
+
+---
+
+# 3. Architecture — Resources, Framework, Data
+
+**Core Framework**
+
+| What | Version | Purpose |
+|------|---------|---------|
+| Language | Java | Primary language |
+| Framework | Spring Boot | REST API framework |
+| *(add if detected)* | | |
+
+**API Endpoints** *(if this is a controller)*
+
+| Method | Endpoint | Description | Parameters |
+|--------|----------|-------------|------------|
+| *(list all endpoints)* | | | |
+
+**Dependencies**
+
+| Dependency | Purpose | How it's used |
+|------------|---------|---------------|
+| *(list autowired dependencies)* | | |
+
+---
+
+# 4. Key Components
+
+**Methods / Functions**
+
+| Method | Purpose | Parameters | Returns |
+|--------|---------|------------|---------|
+| *(list all public methods)* | | | |
+
+**Configuration** *(if applicable)*
+
+| Property | Default | Description |
+|----------|---------|-------------|
+| *(list config properties)* | | |
+
+---
+
+# 5. Key Flows
+
+*(Describe the main execution flows in this file)*
+
+- **Flow 1:** *(description of how data flows through the methods)*
+- **Flow 2:** *(if applicable)*
+
+---
+
+Output clean markdown only. Fill ALL sections based on actual code analysis. Use "N/A" if a section doesn't apply.
 """
     
     response = client.chat.completions.create(
@@ -66,7 +129,7 @@ def update_docs_file(filename, new_docs):
     else:
         content = f"""# Technical Documentation
 
-*Auto-generated documentation for this repository.*
+*Auto-generated Service Specs for this repository.*
 
 **Last updated:** {timestamp}
 
