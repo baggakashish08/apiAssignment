@@ -168,6 +168,61 @@ public class TestController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/calculate")
+    public ResponseEntity<Map<String, Object>> calculate(
+            @RequestParam Double a,
+            @RequestParam Double b,
+            @RequestParam String operation) {
+        
+        Double result;
+        String operationName;
+        
+        switch (operation.toLowerCase()) {
+            case "add":
+                result = a + b;
+                operationName = "addition";
+                break;
+            case "subtract":
+                result = a - b;
+                operationName = "subtraction";
+                break;
+            case "multiply":
+                result = a * b;
+                operationName = "multiplication";
+                break;
+            case "divide":
+                if (b == 0) {
+                    return ResponseEntity.badRequest().body(
+                            ResponseBuilder.error()
+                                    .message("Cannot divide by zero")
+                                    .timestamp()
+                                    .build()
+                    );
+                }
+                result = a / b;
+                operationName = "division";
+                break;
+            default:
+                return ResponseEntity.badRequest().body(
+                        ResponseBuilder.error()
+                                .message("Invalid operation. Use: add, subtract, multiply, divide")
+                                .timestamp()
+                                .build()
+                );
+        }
+        
+        Map<String, Object> response = ResponseBuilder.success()
+                .message("Calculation completed")
+                .field("operandA", a)
+                .field("operandB", b)
+                .field("operation", operationName)
+                .field("result", result)
+                .timestamp()
+                .build();
+        
+        return ResponseEntity.ok(response);
+    }
+
     // ============ Helper Methods ============
 
     private void addModeSpecificData(Map<String, Object> response, String operation) {
